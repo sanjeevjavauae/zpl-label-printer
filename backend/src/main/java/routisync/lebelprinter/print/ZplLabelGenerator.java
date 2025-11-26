@@ -20,8 +20,8 @@ public class ZplLabelGenerator {
      * Generate ZPL for one product. x/y coordinates are basic — adjust for your label size (mm -> dots conversion).
      * Returns ZPL string.
      */
-    public static String buildZplForMappedRow(Map<String, String> mappedRow) throws Exception {
-        StringBuilder sb = new StringBuilder();
+    public static String buildZplForMappedRow(Map<String, String> row) throws Exception {
+        /*StringBuilder sb = new StringBuilder();
         sb.append("^XA\n");
 
         // If logo path is provided and file exists, embed it as inline GFA
@@ -65,7 +65,90 @@ public class ZplLabelGenerator {
         sb.append("^FO20,360^A0N,20,20^FD").append(escapeZpl(ingredients)).append("^FS\n");
 
         sb.append("^XZ\n");
-        return sb.toString();
+        return sb.toString();*/
+        String productName = row.getOrDefault("productName", "");
+        String sku = row.getOrDefault("sku", "");
+        String price = row.getOrDefault("price", "");
+        String expiry = row.getOrDefault("expiryDate", "");
+        String ingredients = row.getOrDefault("ingredients", "");
+        String barcode = row.getOrDefault("barcode", "");
+        String logoPath = row.getOrDefault("logoPath", "");
+
+        StringBuilder zpl = new StringBuilder();
+        zpl.append("^XA");                 // Start format
+        zpl.append("^PW812");              // 4-inch width (812 dots)
+        zpl.append("^LL1218");             // 6-inch height (1218 dots)
+        zpl.append("^LH0,0");              // Label Home
+
+
+        // -----------------------------------------------------------
+        // 1️⃣ LOGO (Top-left, fixed size, no overlap)
+        // -----------------------------------------------------------
+        if (!logoPath.isBlank()) {
+            File file = new File(logoPath);
+            if (file.exists()) {
+                BufferedImage logoImg = ImageIO.read(file);
+
+                // Resize for professional look
+                BufferedImage scaled = ZplImageUtils.resize(logoImg, 150, 150);
+
+                String gfa = ZplImageUtils.toZplGfa(scaled);
+                zpl.append(gfa);
+                zpl.append("^FO30,30^GFA^FS");
+            }
+        }
+
+        // -----------------------------------------------------------
+        // 2️⃣ COMPANY NAME
+        // -----------------------------------------------------------
+        zpl.append("^FO220,40^A0N,60,60^FDRoutisync^FS");
+
+        // Horizontal line
+        zpl.append("^FO30,200^GB740,4,4^FS");
+
+        // -----------------------------------------------------------
+        // 3️⃣ PRODUCT NAME
+        // -----------------------------------------------------------
+        zpl.append("^FO30,240^A0N,50,50^FDProduct: ").append(escapeZpl(productName)).append("^FS");
+
+        // -----------------------------------------------------------
+        // 4️⃣ SKU
+        // -----------------------------------------------------------
+        zpl.append("^FO30,310^A0N,40,40^FDSKU: ").append(escapeZpl(sku)).append("^FS");
+
+        // -----------------------------------------------------------
+        // 5️⃣ PRICE
+        // -----------------------------------------------------------
+        zpl.append("^FO30,370^A0N,45,45^FDPrice: ").append(escapeZpl(price)).append("^FS");
+
+        // -----------------------------------------------------------
+        // 6️⃣ EXPIRY
+        // -----------------------------------------------------------
+        zpl.append("^FO30,430^A0N,45,45^FDExpiry: ").append(escapeZpl(expiry)).append("^FS");
+
+        // -----------------------------------------------------------
+        // 7️⃣ INGREDIENTS (multi-line, wrapped automatically)
+        // -----------------------------------------------------------
+        if (!ingredients.isBlank()) {
+            zpl.append("^FO30,490^FB740,5,10,L^A0N,28,28^FD")
+                    .append(escapeZpl(ingredients))
+                    .append("^FS");
+        }
+
+        // -----------------------------------------------------------
+        // 8️⃣ BARCODE (centered & large)
+        // -----------------------------------------------------------
+        if (!barcode.isBlank()) {
+            // Printer barcode — no images needed
+            zpl.append("^FO100,700");
+            zpl.append("^BY3,2,120");
+            zpl.append("^BCN,150,Y,N,N");
+            zpl.append("^FD").append(escapeZpl(barcode)).append("^FS");
+        }
+
+        zpl.append("^XZ");
+
+        return zpl.toString();
     }
 
     private static String escapeZpl(String s) {

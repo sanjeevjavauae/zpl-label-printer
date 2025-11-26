@@ -61,4 +61,12 @@ public class ZplImageUtils {
         String header = String.format("^GFA,%d,%d,%d,", totalBytes, totalBytes, bytesPerRow);
         return header + hex.toString();
     }
+    public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        java.awt.Image tmp = img.getScaledInstance(newW, newH, java.awt.Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+        java.awt.Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
+    }
 }
