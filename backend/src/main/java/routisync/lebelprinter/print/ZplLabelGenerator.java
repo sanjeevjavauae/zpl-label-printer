@@ -66,7 +66,77 @@ public class ZplLabelGenerator {
 
         sb.append("^XZ\n");
         return sb.toString();*/
+
+
         String productName = row.getOrDefault("productName", "");
+        String sku = row.getOrDefault("sku", "");
+        String price = row.getOrDefault("price", "");
+        String expiry = row.getOrDefault("expiryDate", "");
+        String ingredients = row.getOrDefault("IngredientsList", "");
+        String barcode = row.getOrDefault("BarCode", "");
+        String logoPath = row.getOrDefault("logo_local", "");
+        String productImagePath = row.getOrDefault("productImage_local", "");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("^XA\n");
+        sb.append("^PW812\n"); // Width 4"
+        sb.append("^LL1218\n"); // Height 6"
+
+        // ---------------------------------------------------
+        // LOGO (top-left, exactly like your screenshot)
+        // ---------------------------------------------------
+        if (!logoPath.isBlank()) {
+            System.out.println("Logo path: " + logoPath);
+            File f = new File(logoPath);
+            System.out.println("File exists: " + f.exists());
+            if (f.exists()) {
+                BufferedImage logo = ImageIO.read(f);
+                BufferedImage resized = ZplImageUtils.resize(logo, 120, 120);
+
+                String gfa = ZplImageUtils.toZplGfa(resized);
+
+                // Correct: place image and print immediately
+                sb.append("^FO20,20\n");
+                sb.append(gfa).append("^FS\n");   // DO NOT add a second ^GFA command
+            }
+        }
+
+        // ---------------------------------------------------
+        // BRAND NAME “Routisync”
+        // ---------------------------------------------------
+        sb.append("^FO220,40^A0N,60,60^FDRoutisync^FS\n");
+
+        // Horizontal line
+        sb.append("^FO20,180^GB770,3,3^FS\n");
+
+        // ---------------------------------------------------
+        // PRODUCT INFO (exact layout from your preview)
+        // ---------------------------------------------------
+        sb.append("^FO20,220^A0N,48,48^FDProduct: ").append(escapeZpl(productName)).append("^FS\n");
+        sb.append("^FO20,280^A0N,38,38^FDSKU: ").append(escapeZpl(sku)).append("^FS\n");
+        sb.append("^FO20,330^A0N,38,38^FDPrice: ").append(escapeZpl(price)).append("^FS\n");
+        sb.append("^FO20,380^A0N,38,38^FDExpiry: ").append(escapeZpl(expiry)).append("^FS\n");
+
+        // Ingredients (small font, same style)
+        sb.append("^FO20,430^A0N,26,26^FD\"")
+                .append(escapeZpl(ingredients))
+                .append("\"^FS\n");
+
+        // ---------------------------------------------------
+        // BARCODE (exact style from screenshot)
+        // ---------------------------------------------------
+        sb.append("^FO100,520^BY3,2,120\n");
+        sb.append("^BCN,160,Y,N,N\n");
+        sb.append("^FD").append(escapeZpl(barcode)).append("^FS\n");
+
+        sb.append("^XZ\n");
+        return sb.toString();
+
+
+
+        //latest commented code is below which can be uncommented-
+
+        /*String productName = row.getOrDefault("productName", "");
         String sku = row.getOrDefault("sku", "");
         String price = row.getOrDefault("price", "");
         String expiry = row.getOrDefault("expiryDate", "");
@@ -148,7 +218,7 @@ public class ZplLabelGenerator {
 
         zpl.append("^XZ");
 
-        return zpl.toString();
+        return zpl.toString();*/
     }
 
     private static String escapeZpl(String s) {

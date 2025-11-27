@@ -1,11 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import MapperPage from './MapperPage';
-import './App.css';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './styles.css';
+import 'react-toastify/dist/ReactToastify.css';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <MapperPage />
-  </React.StrictMode>
-);
+const container = document.getElementById('root');
+createRoot(container).render(<App />);

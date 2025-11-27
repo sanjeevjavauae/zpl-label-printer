@@ -17,12 +17,29 @@ public class ZplImageUtils {
      */
     public static String toZplGfa(BufferedImage img) throws Exception {
         // Convert to monochrome (black/white)
-        BufferedImage mono = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+        /*BufferedImage mono = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
         Graphics2D g = mono.createGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, mono.getWidth(), mono.getHeight());
         g.drawImage(img, 0, 0, null);
-        g.dispose();
+        g.dispose();*/
+        // Convert to grayscale manually before binary
+        BufferedImage gray = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        Graphics2D gGray = gray.createGraphics();
+        gGray.drawImage(img, 0, 0, null);
+        gGray.dispose();
+
+// Apply threshold to avoid losing logo
+        BufferedImage mono = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                int rgb = gray.getRGB(x, y) & 0xFF; // grayscale intensity
+                int value = (rgb < 200) ? 0 : 255;  // threshold (adjust if needed)
+                int bw = (value << 16) | (value << 8) | value;
+                mono.setRGB(x, y, bw);
+            }
+        }
+
 
         int width = mono.getWidth();
         int height = mono.getHeight();

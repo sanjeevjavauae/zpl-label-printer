@@ -5,12 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e8807920-fc50-4d6b-a438-a554ce97ab70" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/config/WebConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/PrintPreviewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/PrintPreviewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/UploadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/UploadController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/util/ZplImageUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/util/ZplImageUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_products.xlsx.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/sample_products.xlsx.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -58,5 +71,41 @@
       <updated>1763671817753</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/UploadController.java</url>
+          <line>28</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/util/ZplImageUtils.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java</url>
+          <line>88</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java</url>
+          <line>90</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java</url>
+          <line>92</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java</url>
+          <line>76</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

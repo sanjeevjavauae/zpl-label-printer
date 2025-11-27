@@ -1,29 +1,34 @@
-import React, { useState } from "react";
-import FileUpload from "./components/FileUpload";
-import MappingTable from "./components/MappingTable";
-import PreviewPanel from "./components/PreviewPanel";
-import PrintButton from "./components/PrintButton";
-import "./App.css";
+import axios from "axios";
 
-function App() {
-  const [mappedRows, setMappedRows] = useState([]);
-  const [preview, setPreview] = useState(null);
+const API = "http://localhost:8080";
 
-  return (
-    <div className="container">
-      <h2>ZPL Label Printer</h2>
-
-      <FileUpload setMappedRows={setMappedRows} />
-
-      {mappedRows.length > 0 && (
-        <>
-          <MappingTable mappedRows={mappedRows} setMappedRows={setMappedRows} />
-          <PreviewPanel mappedRows={mappedRows} setPreview={setPreview} preview={preview} />
-          <PrintButton mappedRows={mappedRows} />
-        </>
-      )}
-    </div>
-  );
+// ---------------- Fetch Products ----------------
+export async function fetchProducts() {
+  const res = await axios.get(`${API}/api/products`);
+  return res.data;
 }
 
-export default App;
+// ---------------- Upload Excel (Generic) ----------------
+export async function uploadExcelGeneric(formData) {
+  const res = await axios.post(`${API}/api/uploadExcelGeneric`, formData, {
+    headers: { "Content-Type": "multipart/form-data" }
+  });
+  return res.data;
+}
+
+// ---------------- Preview Label ----------------
+export async function previewProduct(rowList) {
+  const res = await axios.post(`${API}/api/preview`, {
+    mappedRows: rowList
+  });
+  return res.data;
+}
+
+// ---------------- Print to Network Printer ----------------
+export async function printProduct(rowList, printerIp) {
+  const res = await axios.post(`${API}/api/printToNetwork`, {
+    mappedRows: rowList,
+    printerIp
+  });
+  return res.data;
+}
