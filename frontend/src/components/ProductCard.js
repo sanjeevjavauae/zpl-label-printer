@@ -7,6 +7,10 @@ export default function ProductCard({ product }) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState(null);
   const [printing, setPrinting] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+
+  const increaseQty = () => setQuantity(prev => prev + 1);
+  const decreaseQty = () => setQuantity(prev => Math.max(1, prev - 1));
 
   const onPreview = async () => {
     try {
@@ -19,36 +23,116 @@ export default function ProductCard({ product }) {
     }
   };
 
-  const onPrint = async () => {
+  const onPrint = async (qty) => {
     const ip = prompt('Enter Printer IP (or leave blank for default):');
     if (!ip) return;
+
     try {
       setPrinting(true);
-      await printProduct(product, ip);
-      toast.success('Print sent');
+      await printProduct(product, ip, qty);
+      toast.success(`Print sent: ${qty} labels`);
     } catch (e) {
       console.error(e);
       toast.error('Print failed');
-    } finally { setPrinting(false); }
+    } finally {
+      setPrinting(false);
+    }
   };
 
   const onImageClick = async () => {
     if (!window.confirm(`Print label for ${product.productName}?`)) return;
-    await onPrint();
+    await onPrint(quantity);
   };
 
   return (
-    <div className="card">
-      <img src={product.productImage_url || '/placeholder.png'} alt={product.productName} onClick={onImageClick} />
+    <div className="card" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      {/* FIXED IMAGE SPACE */}
+      <div
+        style={{
+          width: "200px",
+          height: "200px",
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "10px",
+        }}
+      >
+        <img
+          src={product.productImage_url || '/placeholder.png'}
+          alt={product.productName}
+          onClick={onImageClick}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            cursor: "pointer",
+          }}
+        />
+      </div>
+
       <h4>{product.productName}</h4>
       <div className="meta">SKU: {product.sku} · Price: {product.price}</div>
       <div className="meta small">Expiry: {product.expiryDate}</div>
-      <div className="actions">
-        <button className="btn ghost" onClick={onPreview}>Preview</button>
-        <button className="btn primary" onClick={onPrint} disabled={printing}>{printing ? 'Printing...' : 'Print'}</button>
+
+      {/* ACTIONS */}
+      <div
+        className="actions"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          marginTop: "10px",
+          flexWrap: "wrap", // allows wrapping if space is small
+          justifyContent: "center",
+        }}
+      >
+        {/* Quantity controls */}
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <button
+            className="btn ghost"
+            style={{ width: "30px", height: "30px", padding: 0 }}
+            onClick={decreaseQty}
+          >
+            –
+          </button>
+          <input
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            style={{
+              width: "50px",
+              textAlign: "center",
+              height: "30px",
+              fontSize: "16px"
+            }}
+          />
+          <button
+            className="btn ghost"
+            style={{ width: "30px", height: "30px", padding: 0 }}
+            onClick={increaseQty}
+          >
+            +
+          </button>
+        </div>
+
+        {/* Preview & Print buttons */}
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <button className="btn ghost" onClick={onPreview}>Preview</button>
+          <button
+            className="btn primary"
+            onClick={() => onPrint(quantity)}
+            disabled={printing}
+          >
+            {printing ? "Printing..." : "Print"}
+          </button>
+        </div>
       </div>
 
-      {previewOpen && <PreviewModal data={previewData} onClose={()=>setPreviewOpen(false)} />}
+      {previewOpen && (
+        <PreviewModal data={previewData} onClose={() => setPreviewOpen(false)} />
+      )}
     </div>
   );
 }

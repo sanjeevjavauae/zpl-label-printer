@@ -25,10 +25,11 @@ export async function previewProduct(rowList) {
 }
 
 // ---------------- Print to Network Printer ----------------
-export async function printProduct(rowList, printerIp) {
+export async function printProduct(rowList, printerIp, quantity = 1) {
   const res = await axios.post(`${API}/api/printToNetwork`, {
     mappedRows: rowList,
-    printerIp
+    printerIp,
+    quantity   // send quantity to backend
   });
   return res.data;
 }

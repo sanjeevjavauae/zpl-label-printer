@@ -4,10 +4,17 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 public class PrinterService {
-    public static void sendToNetworkPrinter(String printerIp, int port, String zpl) throws Exception {
+    public static void sendToNetworkPrinter(String printerIp, int port, String zpl, int quantity) throws Exception {
+        if (quantity <= 0) quantity = 1;
+
+        // Repeat ZPL for the number of labels
+        StringBuilder multiZpl = new StringBuilder();
+        for (int i = 0; i < quantity; i++) {
+            multiZpl.append(zpl);
+        }
         try (Socket socket = new Socket(printerIp, port);
              OutputStream out = socket.getOutputStream()) {
-            out.write(zpl.getBytes(StandardCharsets.UTF_8));
+            out.write(multiZpl.toString().getBytes(StandardCharsets.UTF_8));
             out.flush();
         }
     }

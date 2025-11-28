@@ -143,6 +143,12 @@ public class PrintPreviewController {
             throw new IllegalArgumentException("printerIp required");
         System.out.println("Sending to: " + printerIp);
 
+        // Get quantity (default 1)
+        Integer quantity = 1;
+        Object qtyObj = body.get("quantity");
+        if (qtyObj instanceof Number) {
+            quantity = ((Number) qtyObj).intValue();
+        }
         // Normalize input to List<Map<String, String>>
         List<Map<String, String>> mappedRows = new ArrayList<>();
         if (rawRows instanceof List) {
@@ -160,11 +166,11 @@ public class PrintPreviewController {
         // Send each row to printer
         for (Map<String, String> row : mappedRows) {
             String zpl = ZplLabelGenerator.buildZplForMappedRow(row);
-            PrinterService.sendToNetworkPrinter(printerIp, 9100, zpl);
+            PrinterService.sendToNetworkPrinter(printerIp, 9100, zpl, quantity);
         }
 
         Map<String, String> res = new HashMap<>();
-        res.put("status", "sent");
+        res.put("status", "sent " + quantity + " copies per label");
         System.out.println("Printing Response: " + res);
         return res;
     }

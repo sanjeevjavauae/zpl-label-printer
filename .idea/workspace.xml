@@ -7,8 +7,7 @@
     <list default="true" id="e8807920-fc50-4d6b-a438-a554ce97ab70" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/PrintPreviewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/PrintPreviewController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/~$sample_products.xlsx.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/PrinterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/PrinterService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,18 +93,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/PrinterService.java</url>
-          <line>8</line>
+          <line>15</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/PrinterService.java</url>
-          <line>9</line>
+          <line>16</line>
           <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/PrintPreviewController.java</url>
-          <line>162</line>
-          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
