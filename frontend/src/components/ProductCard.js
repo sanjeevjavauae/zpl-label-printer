@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { previewProduct, printProduct } from '../api';
 import PreviewModal from './PreviewModal';
 import { toast } from 'react-toastify';
@@ -8,6 +8,14 @@ export default function ProductCard({ product }) {
   const [previewData, setPreviewData] = useState(null);
   const [printing, setPrinting] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [defaultPrinter, setDefaultPrinter] = useState(null);
+
+  // Load default printer from localStorage
+  useEffect(() => {
+    const printers = JSON.parse(localStorage.getItem('printers') || '[]');
+    const def = printers.find(p => p.default);
+    setDefaultPrinter(def || null);
+  }, []);
 
   const increaseQty = () => setQuantity(prev => prev + 1);
   const decreaseQty = () => setQuantity(prev => Math.max(1, prev - 1));
@@ -24,13 +32,15 @@ export default function ProductCard({ product }) {
   };
 
   const onPrint = async (qty) => {
-    const ip = prompt('Enter Printer IP (or leave blank for default):');
-    if (!ip) return;
+    if (!defaultPrinter) {
+      toast.error("No printer configured. Please set a printer in Settings");
+      return;
+    }
 
     try {
       setPrinting(true);
-      await printProduct(product, ip, qty);
-      toast.success(`Print sent: ${qty} labels`);
+      await printProduct(product, defaultPrinter.ip, qty);
+      toast.success(`Print sent to ${defaultPrinter.name}: ${qty} labels`);
     } catch (e) {
       console.error(e);
       toast.error('Print failed');
@@ -46,7 +56,6 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="card" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {/* FIXED IMAGE SPACE */}
       <div
         style={{
           width: "200px",
@@ -62,12 +71,7 @@ export default function ProductCard({ product }) {
           src={product.productImage_url || '/placeholder.png'}
           alt={product.productName}
           onClick={onImageClick}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            cursor: "pointer",
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }}
         />
       </div>
 
@@ -75,7 +79,6 @@ export default function ProductCard({ product }) {
       <div className="meta">SKU: {product.sku} · Price: {product.price}</div>
       <div className="meta small">Expiry: {product.expiryDate}</div>
 
-      {/* ACTIONS */}
       <div
         className="actions"
         style={{
@@ -83,56 +86,31 @@ export default function ProductCard({ product }) {
           alignItems: "center",
           gap: "10px",
           marginTop: "10px",
-          flexWrap: "wrap", // allows wrapping if space is small
+          flexWrap: "wrap",
           justifyContent: "center",
         }}
       >
-        {/* Quantity controls */}
         <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <button
-            className="btn ghost"
-            style={{ width: "30px", height: "30px", padding: 0 }}
-            onClick={decreaseQty}
-          >
-            –
-          </button>
+          <button className="btn ghost" style={{ width: "30px", height: "30px", padding: 0 }} onClick={decreaseQty}>–</button>
           <input
             type="number"
             min="1"
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
-            style={{
-              width: "50px",
-              textAlign: "center",
-              height: "30px",
-              fontSize: "16px"
-            }}
+            style={{ width: "50px", textAlign: "center", height: "30px", fontSize: "16px" }}
           />
-          <button
-            className="btn ghost"
-            style={{ width: "30px", height: "30px", padding: 0 }}
-            onClick={increaseQty}
-          >
-            +
-          </button>
+          <button className="btn ghost" style={{ width: "30px", height: "30px", padding: 0 }} onClick={increaseQty}>+</button>
         </div>
 
-        {/* Preview & Print buttons */}
         <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
           <button className="btn ghost" onClick={onPreview}>Preview</button>
-          <button
-            className="btn primary"
-            onClick={() => onPrint(quantity)}
-            disabled={printing}
-          >
+          <button className="btn primary" onClick={() => onPrint(quantity)} disabled={printing}>
             {printing ? "Printing..." : "Print"}
           </button>
         </div>
       </div>
 
-      {previewOpen && (
-        <PreviewModal data={previewData} onClose={() => setPreviewOpen(false)} />
-      )}
+      {previewOpen && <PreviewModal data={previewData} onClose={() => setPreviewOpen(false)} />}
     </div>
   );
 }
