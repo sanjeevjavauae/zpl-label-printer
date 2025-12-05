@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e8807920-fc50-4d6b-a438-a554ce97ab70" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/PrintPreviewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/controller/PrintPreviewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,12 +83,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java</url>
-          <line>43</line>
+          <line>28</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/backend/src/main/java/routisync/lebelprinter/print/ZplLabelGenerator.java</url>
-          <line>29</line>
+          <line>20</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

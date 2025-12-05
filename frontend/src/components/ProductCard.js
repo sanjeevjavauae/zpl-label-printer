@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { previewProduct, printProduct } from '../api';
-import PreviewModal from './PreviewModal';
+import { printToNetwork } from '../api';
 import { toast } from 'react-toastify';
 
-export default function ProductCard({ product }) {
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewData, setPreviewData] = useState(null);
-  const [printing, setPrinting] = useState(false);
+export default function ProductCard({ product, selectedTemplate, handlePreview }) {
   const [quantity, setQuantity] = useState(1);
   const [defaultPrinter, setDefaultPrinter] = useState(null);
 
-  // Load default printer from localStorage
   useEffect(() => {
     const printers = JSON.parse(localStorage.getItem('printers') || '[]');
     const def = printers.find(p => p.default);
@@ -20,58 +15,60 @@ export default function ProductCard({ product }) {
   const increaseQty = () => setQuantity(prev => prev + 1);
   const decreaseQty = () => setQuantity(prev => Math.max(1, prev - 1));
 
-  const onPreview = async () => {
-    try {
-      const res = await previewProduct(product);
-      setPreviewData(res);
-      setPreviewOpen(true);
-    } catch (e) {
-      console.error(e);
-      toast.error('Preview failed');
+  const onImageClick = async () => {
+    if (!selectedTemplate) {
+      toast.error("Please select a label template first");
+      return;
     }
-  };
-
-  const onPrint = async (qty) => {
     if (!defaultPrinter) {
       toast.error("No printer configured. Please set a printer in Settings");
       return;
     }
 
     try {
-      setPrinting(true);
-      await printProduct(product, defaultPrinter.ip, qty);
-      toast.success(`Print sent to ${defaultPrinter.name}: ${qty} labels`);
+      let printerIp = "";
+      if (typeof defaultPrinter.ip === "string") {
+        printerIp = defaultPrinter.ip;
+      } else if (defaultPrinter.ip && typeof defaultPrinter.ip === "object") {
+        printerIp = defaultPrinter.ip.ip || "";
+      }
+
+      if (!printerIp) {
+        toast.error("Printer IP is invalid");
+        return;
+      }
+
+      await printToNetwork(product, selectedTemplate, printerIp, quantity);
+      toast.success(`Print sent to ${defaultPrinter.name}: ${quantity} labels`);
     } catch (e) {
       console.error(e);
-      toast.error('Print failed');
-    } finally {
-      setPrinting(false);
+      toast.error("Print failed");
     }
   };
 
-  const onImageClick = async () => {
-    if (!window.confirm(`Print label for ${product.productName}?`)) return;
-    await onPrint(quantity);
-  };
-
   return (
-    <div className="card" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div className="card" style={{ width: '200px', textAlign: 'center' }}>
       <div
         style={{
           width: "200px",
           height: "200px",
-          overflow: "hidden",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
           marginBottom: "10px",
+          overflow: "hidden",        // IMPORTANT
+          background: "#fff",
+          borderRadius: "4px"
         }}
       >
         <img
           src={product.productImage_url || '/placeholder.png'}
           alt={product.productName}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",     // COVER again = full-size images
+            cursor: "pointer",
+            display: "block",
+          }}
           onClick={onImageClick}
-          style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }}
         />
       </div>
 
@@ -79,38 +76,28 @@ export default function ProductCard({ product }) {
       <div className="meta">SKU: {product.sku} · Price: {product.price}</div>
       <div className="meta small">Expiry: {product.expiryDate}</div>
 
-      <div
-        className="actions"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          marginTop: "10px",
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <button className="btn ghost" style={{ width: "30px", height: "30px", padding: 0 }} onClick={decreaseQty}>–</button>
+      <div className="actions" style={{ marginTop: '8px' }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
+          <button className="btn ghost" onClick={decreaseQty}>–</button>
           <input
             type="number"
             min="1"
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
-            style={{ width: "50px", textAlign: "center", height: "30px", fontSize: "16px" }}
+            style={{ width: '50px', textAlign: 'center' }}
           />
-          <button className="btn ghost" style={{ width: "30px", height: "30px", padding: 0 }} onClick={increaseQty}>+</button>
+          <button className="btn ghost" onClick={increaseQty}>+</button>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-          <button className="btn ghost" onClick={onPreview}>Preview</button>
-          <button className="btn primary" onClick={() => onPrint(quantity)} disabled={printing}>
-            {printing ? "Printing..." : "Print"}
+        <div style={{ marginTop: '6px' }}>
+          <button
+            className="btn ghost"
+            onClick={() => handlePreview(product)}
+          >
+            Preview
           </button>
         </div>
       </div>
-
-      {previewOpen && <PreviewModal data={previewData} onClose={() => setPreviewOpen(false)} />}
     </div>
   );
 }

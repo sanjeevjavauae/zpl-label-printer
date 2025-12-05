@@ -1,30 +1,9 @@
 import React, { useState } from 'react';
 import { FiMenu } from 'react-icons/fi';
-import PrinterSettings from './PrinterSettings'; // Ensure this path is correct
+import PrinterSettings from './PrinterSettings';
 
-export default function Navbar({ onMenuToggle, onOpenUpload, onOpenAdd, menuOpen }) {
+export default function Navbar({ onMenuToggle, onOpenUpload, onOpenAdd, menuOpen, openTemplateModal }) {
   const [printerModalOpen, setPrinterModalOpen] = useState(false);
-
-  // Wrappers to close menu after action
-  const handleOpenUpload = () => {
-    onOpenUpload();
-    onMenuToggle(); // close hamburger menu
-  };
-
-  const handleOpenAdd = () => {
-    onOpenAdd();
-    onMenuToggle(); // close hamburger menu
-  };
-
-  const handleOpenPrinterSettings = () => {
-    setPrinterModalOpen(true);
-    onMenuToggle(); // close hamburger menu
-  };
-
-  const handlePrintHistory = () => {
-    alert('Print history not implemented');
-    onMenuToggle(); // close hamburger menu
-  };
 
   return (
     <header className="topbar">
@@ -42,18 +21,15 @@ export default function Navbar({ onMenuToggle, onOpenUpload, onOpenAdd, menuOpen
         </div>
         {menuOpen && (
           <div className="menu">
-            <button onClick={handleOpenUpload}>Upload products (Excel + images)</button>
-            <button onClick={handleOpenAdd}>Add single product</button>
-            <button onClick={handleOpenPrinterSettings}>Printers / Settings</button>
-            <button onClick={handlePrintHistory}>Print history</button>
+            <button onClick={() => { onOpenUpload(); onMenuToggle(); }}>Upload products</button>
+            <button onClick={() => { onOpenAdd(); onMenuToggle(); }}>Add single product</button>
+            <button onClick={() => { openTemplateModal(); onMenuToggle(); }}>Select Label Template</button>
+            <button onClick={() => { setPrinterModalOpen(true); onMenuToggle(); }}>Printers / Settings</button>
           </div>
         )}
       </div>
 
-      {/* Printer Settings Modal */}
-      {printerModalOpen && (
-        <PrinterSettings onClose={() => setPrinterModalOpen(false)} />
-      )}
+      {printerModalOpen && <PrinterSettings onClose={() => setPrinterModalOpen(false)} />}
     </header>
   );
 }

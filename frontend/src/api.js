@@ -11,25 +11,28 @@ export async function fetchProducts() {
 // ---------------- Upload Excel (Generic) ----------------
 export async function uploadExcelGeneric(formData) {
   const res = await axios.post(`${API}/api/uploadExcelGeneric`, formData, {
-    headers: { "Content-Type": "multipart/form-data" }
+    headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
 }
 
 // ---------------- Preview Label ----------------
-export async function previewProduct(rowList) {
+export async function previewProduct(product, template) {
   const res = await axios.post(`${API}/api/preview`, {
-    mappedRows: rowList
+    mappedRows: [product],
+    template
   });
   return res.data;
 }
 
 // ---------------- Print to Network Printer ----------------
-export async function printProduct(rowList, printerIp, quantity = 1) {
+export async function printToNetwork(product, template, printerIp, quantity) {
   const res = await axios.post(`${API}/api/printToNetwork`, {
-    mappedRows: rowList,
+    mappedRows: [product],
     printerIp,
-    quantity   // send quantity to backend
+    quantity,
+    template
   });
   return res.data;
 }
+
